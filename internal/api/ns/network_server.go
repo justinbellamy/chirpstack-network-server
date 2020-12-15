@@ -984,10 +984,6 @@ func (n *NetworkServerAPI) UpdateGateway(ctx context.Context, req *ns.UpdateGate
 		gw.Boards = append(gw.Boards, gwBoard)
 	}
 
-	if err = storage.FlushGatewayCache(ctx, gw.GatewayID); err != nil {
-		return nil, errToRPCError(err)
-	}
-
 	err = storage.Transaction(func(tx sqlx.Ext) error {
 		if err = storage.UpdateGateway(ctx, tx, &gw); err != nil {
 			return errToRPCError(err)
@@ -1005,10 +1001,6 @@ func (n *NetworkServerAPI) UpdateGateway(ctx context.Context, req *ns.UpdateGate
 func (n *NetworkServerAPI) DeleteGateway(ctx context.Context, req *ns.DeleteGatewayRequest) (*empty.Empty, error) {
 	var id lorawan.EUI64
 	copy(id[:], req.Id)
-
-	if err := storage.FlushGatewayCache(ctx, id); err != nil {
-		return nil, errToRPCError(err)
-	}
 
 	if err := storage.DeleteGateway(ctx, storage.DB(), id); err != nil {
 		return nil, errToRPCError(err)

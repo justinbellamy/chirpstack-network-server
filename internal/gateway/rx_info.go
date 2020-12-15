@@ -32,7 +32,7 @@ func UpdateMetaDataInRxInfoSet(ctx context.Context, db sqlx.Queryer, rxInfoSet [
 		rxInfo := rxInfoSet[i]
 
 		id := helpers.GetGatewayID(rxInfo)
-		g, err := storage.GetAndCacheGateway(ctx, db, id)
+		g, err := storage.GetAndCacheGatewayMeta(ctx, db, id)
 		if err != nil {
 			if errors.Cause(err) == storage.ErrDoesNotExist {
 				log.WithFields(log.Fields{
