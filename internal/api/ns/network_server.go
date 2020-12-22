@@ -71,6 +71,7 @@ func (n *NetworkServerAPI) CreateServiceProfile(ctx context.Context, req *ns.Cre
 		NwkGeoLoc:              req.ServiceProfile.NwkGeoLoc,
 		TargetPER:              int(req.ServiceProfile.TargetPer),
 		MinGWDiversity:         int(req.ServiceProfile.MinGwDiversity),
+		GwsPrivate:             req.ServiceProfile.GwsPrivate,
 	}
 
 	switch req.ServiceProfile.UlRatePolicy {
@@ -126,6 +127,7 @@ func (n *NetworkServerAPI) GetServiceProfile(ctx context.Context, req *ns.GetSer
 			NwkGeoLoc:              sp.NwkGeoLoc,
 			TargetPer:              uint32(sp.TargetPER),
 			MinGwDiversity:         uint32(sp.MinGWDiversity),
+			GwsPrivate:             sp.GwsPrivate,
 		},
 	}
 
@@ -187,6 +189,7 @@ func (n *NetworkServerAPI) UpdateServiceProfile(ctx context.Context, req *ns.Upd
 	sp.NwkGeoLoc = req.ServiceProfile.NwkGeoLoc
 	sp.TargetPER = int(req.ServiceProfile.TargetPer)
 	sp.MinGWDiversity = int(req.ServiceProfile.MinGwDiversity)
+	sp.GwsPrivate = req.ServiceProfile.GwsPrivate
 
 	switch req.ServiceProfile.UlRatePolicy {
 	case ns.RatePolicy_MARK:
