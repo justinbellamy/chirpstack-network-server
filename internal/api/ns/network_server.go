@@ -842,6 +842,13 @@ func (n *NetworkServerAPI) CreateGateway(ctx context.Context, req *ns.CreateGate
 		gw.GatewayProfileID = &gpID
 	}
 
+	// Service-profile ID.
+	if b := req.Gateway.ServiceProfileId; len(b) != 0 {
+		var spID uuid.UUID
+		copy(spID[:], b)
+		gw.ServiceProfileID = &spID
+	}
+
 	// Routing Profile ID.
 	copy(gw.RoutingProfileID[:], req.Gateway.RoutingProfileId)
 
@@ -905,6 +912,10 @@ func (n *NetworkServerAPI) GetGateway(ctx context.Context, req *ns.GetGatewayReq
 		resp.Gateway.GatewayProfileId = gw.GatewayProfileID.Bytes()
 	}
 
+	if gw.ServiceProfileID != nil {
+		resp.Gateway.ServiceProfileId = gw.ServiceProfileID.Bytes()
+	}
+
 	if gw.FirstSeenAt != nil {
 		resp.FirstSeenAt, _ = ptypes.TimestampProto(*gw.FirstSeenAt)
 	}
@@ -957,6 +968,15 @@ func (n *NetworkServerAPI) UpdateGateway(ctx context.Context, req *ns.UpdateGate
 		gw.GatewayProfileID = &gpID
 	} else {
 		gw.GatewayProfileID = nil
+	}
+
+	// Service-profile ID.
+	if b := req.Gateway.ServiceProfileId; len(b) != 0 {
+		var spID uuid.UUID
+		copy(spID[:], b)
+		gw.ServiceProfileID = &spID
+	} else {
+		gw.ServiceProfileID = nil
 	}
 
 	gw.Location = storage.GPSPoint{
