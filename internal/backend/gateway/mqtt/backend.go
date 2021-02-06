@@ -130,21 +130,25 @@ func (b *Backend) Close() error {
 
 // RXPacketChan returns the uplink-frame channel.
 func (b *Backend) RXPacketChan() chan gw.UplinkFrame {
+	log.Info("gateway/mqtt: RXPacketChan")
 	return b.rxPacketChan
 }
 
 // StatsPacketChan returns the gateway stats channel.
 func (b *Backend) StatsPacketChan() chan gw.GatewayStats {
+	log.Info("gateway/mqtt: StatsPacketChan")
 	return b.statsPacketChan
 }
 
 // DownlinkTXAckChan returns the downlink tx ack channel.
 func (b *Backend) DownlinkTXAckChan() chan gw.DownlinkTXAck {
+	log.Info("gateway/mqtt: DownlinkTXAckChan")
 	return b.downlinkTXAckChan
 }
 
 // SendTXPacket sends the given downlink-frame to the gateway.
 func (b *Backend) SendTXPacket(txPacket gw.DownlinkFrame) error {
+	log.Info("gateway/mqtt: SendTXPacket")
 	gatewayID := helpers.GetGatewayID(&txPacket)
 	downID := helpers.GetDownlinkID(&txPacket)
 
@@ -159,12 +163,14 @@ func (b *Backend) SendTXPacket(txPacket gw.DownlinkFrame) error {
 
 // SendGatewayConfigPacket sends the given GatewayConfigPacket to the gateway.
 func (b *Backend) SendGatewayConfigPacket(configPacket gw.GatewayConfiguration) error {
+	log.Info("gateway/mqtt: SendGatewayConfigPacket")
 	gatewayID := helpers.GetGatewayID(&configPacket)
 
 	return b.publishCommand(log.Fields{}, gatewayID, "config", &configPacket)
 }
 
 func (b *Backend) publishCommand(fields log.Fields, gatewayID lorawan.EUI64, command string, msg proto.Message) error {
+	log.Info("gateway/mqtt: publishCommand")
 	t := b.getGatewayMarshaler(gatewayID)
 	bb, err := marshaler.MarshalCommand(t, msg)
 	if err != nil {
@@ -197,6 +203,7 @@ func (b *Backend) publishCommand(fields log.Fields, gatewayID lorawan.EUI64, com
 }
 
 func (b *Backend) eventHandler(c paho.Client, msg paho.Message) {
+	log.Info("gateway/mqtt: eventHandler")
 	b.wg.Add(1)
 	defer b.wg.Done()
 
@@ -213,6 +220,7 @@ func (b *Backend) eventHandler(c paho.Client, msg paho.Message) {
 }
 
 func (b *Backend) rxPacketHandler(c paho.Client, msg paho.Message) {
+	log.Info("gateway/mqtt: rxPacketHandler")
 	b.wg.Add(1)
 	defer b.wg.Done()
 
@@ -252,6 +260,7 @@ func (b *Backend) rxPacketHandler(c paho.Client, msg paho.Message) {
 }
 
 func (b *Backend) statsPacketHandler(c paho.Client, msg paho.Message) {
+	log.Info("gateway/mqtt: statsPacketHandler")
 	b.wg.Add(1)
 	defer b.wg.Done()
 
@@ -292,6 +301,7 @@ func (b *Backend) statsPacketHandler(c paho.Client, msg paho.Message) {
 }
 
 func (b *Backend) ackPacketHandler(c paho.Client, msg paho.Message) {
+	log.Info("gateway/mqtt: ackPacketHandler")
 	b.wg.Add(1)
 	defer b.wg.Done()
 
@@ -358,6 +368,7 @@ func (b *Backend) onConnectionLost(c paho.Client, reason error) {
 }
 
 func (b *Backend) setGatewayMarshaler(gatewayID lorawan.EUI64, t marshaler.Type) {
+	log.Info("gateway/mqtt: setGatewayMarshaler")
 	b.Lock()
 	defer b.Unlock()
 
@@ -365,6 +376,7 @@ func (b *Backend) setGatewayMarshaler(gatewayID lorawan.EUI64, t marshaler.Type)
 }
 
 func (b *Backend) getGatewayMarshaler(gatewayID lorawan.EUI64) marshaler.Type {
+	log.Info("gateway/mqtt: getGatewayMarshaler")
 	b.RLock()
 	defer b.RUnlock()
 

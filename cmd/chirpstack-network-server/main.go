@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/grpclog"
 
@@ -50,6 +52,9 @@ func (gl *grpcLogger) Infof(format string, args ...interface{}) {
 
 func init() {
 	grpclog.SetLoggerV2(&grpcLogger{log.StandardLogger()})
+	log.SetFormatter(&log.JSONFormatter{
+		TimestampFormat: time.RFC3339Nano,
+	})
 }
 
 var version string // set by the compiler
